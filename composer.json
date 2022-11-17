@@ -2,6 +2,7 @@
     "name": "picqer/shopware6-plugin",
     "description": "Picqer Extended Integration for Shopware 6",
     "type": "shopware-platform-plugin",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Picqer\\Shopware6Plugin\\": "src/"
