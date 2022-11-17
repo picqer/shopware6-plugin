@@ -1,0 +1,40 @@
+{
+    "name": "picqer/shopware6-plugin",
+    "description": "Picqer Extended Integration for Shopware 6",
+    "type": "shopware-platform-plugin",
+    "autoload": {
+        "psr-4": {
+            "Picqer\\Shopware6Plugin\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Picqer",
+            "email": "marco@picqer.com"
+        }
+    ],
+    "keywords": [
+        "picqer",
+        "shopware6"
+    ],
+    "require": {
+        "php": ">=7.4",
+        "shopware/core": "6.4.*",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "extra": {
+        "shopware-plugin-class": "Picqer\\Shopware6Plugin\\PicqerExtendedIntegration",
+        "plugin-icon": "plugin.png",
+        "label": {
+            "de-DE": "Picqer Extended Integration",
+            "en-GB": "Picqer Extended Integration",
+            "nl-NL": "Picqer Extended Integration"
+        },
+        "description": {
+            "de-DE": "Adds realtime syncing capabilities to the integration with Picqer",
+            "en-GB": "Adds realtime syncing capabilities to the integration with Picqer",
+            "nl-NL": "Adds realtime syncing capabilities to the integration with Picqer"
+        }
+    }
+}

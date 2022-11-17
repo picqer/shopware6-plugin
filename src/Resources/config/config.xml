@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+<card>
+    <title>Connection Details</title>
+    <input-field>
+        <name>subdomain</name>
+        <label>Subdomain</label>
+    </input-field>
+    <input-field>
+        <name >connectionkey</name>
+        <label>Connection Key</label>
+    </input-field>
+</card>
+</config>
