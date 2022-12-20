@@ -1,6 +1,8 @@
 # Picqer Extended Integration for Shopware 6
 Shopware extension for Picqer
 
+[Read full documentation on picqer.com](https://picqer.com/nl/help/artikelen/shopware-6-plugin)
+
 ## Installation
 This project can easily be installed through Composer.
 
