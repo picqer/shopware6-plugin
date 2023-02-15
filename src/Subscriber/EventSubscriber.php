@@ -2,8 +2,10 @@
 
 namespace Picqer\Shopware6Plugin\Subscriber;
 
+use Exception;
 use Picqer\Shopware6Plugin\Client\PicqerClient;
 use Picqer\Shopware6Plugin\Exception\IncompleteConfigurationException;
+use Picqer\Shopware6Plugin\Exception\OrderNotFoundException;
 use Picqer\Shopware6Plugin\Exception\RequestFailedException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -51,32 +53,56 @@ final class EventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            OrderEvents::ORDER_WRITTEN_EVENT => 'pushOrder',
+            OrderEvents::ORDER_WRITTEN_EVENT => 'handle',
         ];
     }
 
-    public function pushOrder(EntityWrittenEvent $event): void
+    public function handle(EntityWrittenEvent $event): void
     {
         if (! isset($event->getIds()[0])) {
             return;
         }
 
-        $order = $this->orderRepository->search(new Criteria([$event->getIds()[0]]), $event->getContext())->first();
-        if (! $order instanceof OrderEntity) {
-            return;
+        $orderId = $event->getIds()[0];
+
+        try {
+            $order = $this->orderRepository->search(new Criteria([$orderId]), $event->getContext())->first();
+            if (! $order instanceof OrderEntity) {
+                throw new OrderNotFoundException(sprintf('Order [%s] not found', $orderId));
+            }
+
+            $salesChannelId = $order->getSalesChannelId();
+            $disabled = $this->configService->getBool($this->buildConfigKey('disabled'), $salesChannelId);
+            if ($disabled) {
+                return;
+            }
+
+            $subdomain = $this->configService->getString($this->buildConfigKey('subdomain'), $salesChannelId);
+            $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
+            $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
+
+            $this->pushOrderToPicqer($subdomain, $connectionKey, $order, $debug, $salesChannelId);
+        } catch (Exception $e) {
+            $this->logger->error('[Picqer] Caught unexpected exception', [
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'orderId' => $orderId,
+            ]);
         }
+    }
 
-        $salesChannelId = $order->getSalesChannelId();
+    private function buildConfigKey(string $key): string
+    {
+        return sprintf('PicqerExtendedIntegration.config.%s', $key);
+    }
 
-        $disabled = $this->configService->getBool($this->buildConfigKey('disabled'), $salesChannelId);
-        if ($disabled) {
-            return;
-        }
-
-        $subdomain = $this->configService->getString($this->buildConfigKey('subdomain'), $salesChannelId);
-        $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
-        $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
-
+    private function pushOrderToPicqer(
+        string $subdomain,
+        string $connectionKey,
+        OrderEntity $order,
+        bool $debug,
+        string $salesChannelId
+    ): void {
         try {
             if (empty($subdomain) || empty($connectionKey)) {
                 throw new IncompleteConfigurationException($subdomain, $connectionKey);
@@ -110,10 +136,5 @@ final class EventSubscriber implements EventSubscriberInterface
                 'salesChannelId' => $salesChannelId,
             ]);
         }
-    }
-
-    private function buildConfigKey(string $key): string
-    {
-        return sprintf('PicqerExtendedIntegration.config.%s', $key);
     }
 }
