@@ -4,10 +4,6 @@
 
 <card>
     <title>Connection Details</title>
-    <input-field type="bool">
-        <name>enabled</name>
-        <label>Enabled</label>
-    </input-field>
     <input-field>
         <name>subdomain</name>
         <label>Subdomain</label>
@@ -15,6 +11,10 @@
     <input-field>
         <name>connectionkey</name>
         <label>Connection Key</label>
+    </input-field>
+    <input-field type="bool">
+        <name>disabled</name>
+        <label>Disable sending webhooks for this sales channel</label>
     </input-field>
     <input-field type="bool">
         <name>debug</name>
