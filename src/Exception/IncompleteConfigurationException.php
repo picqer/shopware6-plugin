@@ -7,12 +7,12 @@ use Exception;
 class IncompleteConfigurationException extends Exception
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $subdomain;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $connectionKey;
 
@@ -24,12 +24,12 @@ class IncompleteConfigurationException extends Exception
         $this->connectionKey = $connectionKey;
     }
 
-    public function getSubdomain(): string
+    public function getSubdomain()
     {
         return $this->subdomain;
     }
 
-    public function getConnectionKey(): string
+    public function getConnectionKey()
     {
         return $this->connectionKey;
     }
