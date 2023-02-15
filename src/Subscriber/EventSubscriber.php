@@ -4,6 +4,7 @@ namespace Picqer\Shopware6Plugin\Subscriber;
 
 use Exception;
 use Picqer\Shopware6Plugin\Client\PicqerClient;
+use Picqer\Shopware6Plugin\Exception\IncompleteConfigurationException;
 use Picqer\Shopware6Plugin\Exception\RequestFailedException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -79,11 +80,24 @@ final class EventSubscriber implements EventSubscriberInterface
             $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
             $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
 
+            if (empty($subdomain) || empty($connectionKey)) {
+                throw new IncompleteConfigurationException($subdomain, $connectionKey);
+            }
+
             $this->client->pushOrder(
                 $subdomain,
                 $connectionKey,
                 $order->getId()
             );
+        } catch (IncompleteConfigurationException $e) {
+            if (! $debug) {
+                return;
+            }
+
+            $this->logger->error('[Picqer] Subdomain and/or connection-key not configured', [
+                'subdomain' => $e->getSubdomain(),
+                'connectionKey' => $e->getConnectionKey(),
+            ]);
         } catch (RequestFailedException $e) {
             if (! $debug) {
                 return;
