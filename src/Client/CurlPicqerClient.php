@@ -6,7 +6,7 @@ use Picqer\Shopware6Plugin\Exception\RequestFailedException;
 
 final class CurlPicqerClient implements PicqerClient
 {
-    const USER_AGENT = 'Picqer Shopware 6 Plugin (version 1.0.0)';
+    const USER_AGENT = 'Picqer Shopware 6 Plugin (version 1.1.0)';
 
     public function pushOrder(string $subdomain, string $connectionKey, string $id): void
     {
@@ -16,13 +16,13 @@ final class CurlPicqerClient implements PicqerClient
         );
     }
 
-    private function post(string $url, array $body): void
+    private function post(string $endpoint, array $body): void
     {
         $session = curl_init();
 
         curl_setopt($session, CURLOPT_USERAGENT, self::USER_AGENT);
 
-        curl_setopt($session, CURLOPT_URL, $url);
+        curl_setopt($session, CURLOPT_URL, $endpoint);
         curl_setopt($session, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
             'Accept: application/json'
@@ -42,7 +42,7 @@ final class CurlPicqerClient implements PicqerClient
         curl_close($session);
 
         if ($errorNo) {
-            throw new RequestFailedException($errorMessage);
+            throw new RequestFailedException($endpoint, $errorMessage);
         }
     }
 }

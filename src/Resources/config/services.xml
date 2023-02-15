@@ -10,6 +10,7 @@
         <service id="Picqer\Shopware6Plugin\Subscriber\EventSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="Picqer\Shopware6Plugin\Client\CurlPicqerClient" />
+            <argument type="service" id="order.repository" />
             <argument type="service" id="logger" />
             <tag name="kernel.event_subscriber"/>
         </service>
