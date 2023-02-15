@@ -20,7 +20,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "shopware/core": "6.4.*",
+        "shopware/core": "^6.4",
         "ext-curl": "*",
         "ext-json": "*"
     },
