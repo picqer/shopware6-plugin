@@ -9,8 +9,12 @@
         <label>Subdomain</label>
     </input-field>
     <input-field>
-        <name >connectionkey</name>
+        <name>connectionkey</name>
         <label>Connection Key</label>
+    </input-field>
+    <input-field type="bool">
+        <name>debug</name>
+        <label>Enable debug logging</label>
     </input-field>
 </card>
 </config>

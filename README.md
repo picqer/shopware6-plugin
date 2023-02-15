@@ -14,6 +14,7 @@ This project can easily be installed through Composer.
 3. Fill out the general configuration information:
     + Subdomain: is the prefix of your domain name. If your log on to 'my-shop.picqer.com', then fill in 'my-shop'.
     + Connection Key: can be found in Picqer > Settings > Webshops > Shopware shop. Copy and paste this field.
+    + Debug: Only enable when the plugin is not working, this will log errors in the communication with Picqer.
 
 Orders will now be pushed to Picqer immediately.
 
