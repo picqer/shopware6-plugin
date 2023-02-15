@@ -109,6 +109,7 @@ final class EventSubscriber implements EventSubscriberInterface
             ]);
         } catch (Exception $e) {
             $this->logger->error('[Picqer] Caught unexpected exception', [
+                'exception' => get_class($e),
                 'message' => $e->getMessage(),
             ]);
         }
