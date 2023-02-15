@@ -2,7 +2,6 @@
 
 namespace Picqer\Shopware6Plugin\Subscriber;
 
-use Exception;
 use Picqer\Shopware6Plugin\Client\PicqerClient;
 use Picqer\Shopware6Plugin\Exception\IncompleteConfigurationException;
 use Picqer\Shopware6Plugin\Exception\RequestFailedException;
@@ -62,24 +61,23 @@ final class EventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $debug = false;
+        $order = $this->orderRepository->search(new Criteria([$event->getIds()[0]]), $event->getContext())->first();
+        if (! $order instanceof OrderEntity) {
+            return;
+        }
+
+        $salesChannelId = $order->getSalesChannelId();
+
+        $disabled = $this->configService->getBool($this->buildConfigKey('disabled'), $salesChannelId);
+        if ($disabled) {
+            return;
+        }
+
+        $subdomain = $this->configService->getString($this->buildConfigKey('subdomain'), $salesChannelId);
+        $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
+        $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
+
         try {
-            $order = $this->orderRepository->search(new Criteria([$event->getIds()[0]]), $event->getContext())->first();
-            if (! $order instanceof OrderEntity) {
-                return;
-            }
-
-            $salesChannelId = $order->getSalesChannelId();
-
-            $disabled = $this->configService->getBool($this->buildConfigKey('disabled'), $salesChannelId);
-            if ($disabled) {
-                return;
-            }
-
-            $subdomain = $this->configService->getString($this->buildConfigKey('subdomain'), $salesChannelId);
-            $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
-            $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
-
             if (empty($subdomain) || empty($connectionKey)) {
                 throw new IncompleteConfigurationException($subdomain, $connectionKey);
             }
@@ -97,6 +95,8 @@ final class EventSubscriber implements EventSubscriberInterface
             $this->logger->error('[Picqer] Subdomain and/or connection-key not configured', [
                 'subdomain' => $e->getSubdomain(),
                 'connectionKey' => $e->getConnectionKey(),
+                'orderId' => $order->getId(),
+                'salesChannelId' => $salesChannelId,
             ]);
         } catch (RequestFailedException $e) {
             if (! $debug) {
@@ -106,11 +106,8 @@ final class EventSubscriber implements EventSubscriberInterface
             $this->logger->error('[Picqer] Could not call webhook', [
                 'endpoint' => $e->getEndpoint(),
                 'message' => $e->getMessage(),
-            ]);
-        } catch (Exception $e) {
-            $this->logger->error('[Picqer] Caught unexpected exception', [
-                'exception' => get_class($e),
-                'message' => $e->getMessage(),
+                'orderId' => $order->getId(),
+                'salesChannelId' => $salesChannelId,
             ]);
         }
     }
