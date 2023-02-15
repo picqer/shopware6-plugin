@@ -4,6 +4,10 @@
 
 <card>
     <title>Connection Details</title>
+    <input-field type="bool">
+        <name>enabled</name>
+        <label>Enabled</label>
+    </input-field>
     <input-field>
         <name>subdomain</name>
         <label>Subdomain</label>

@@ -12,6 +12,7 @@ This project can easily be installed through Composer.
 1. Log onto your Shopware Administration portal and navigate to Extensions > My extensions.
 2. Install and activate the Picqer Extended Integration plugin.
 3. Fill out the general configuration information:
+    + Enabled: Enable sending webhooks to Picqer for this sales-channel.
     + Subdomain: is the prefix of your domain name. If your log on to 'my-shop.picqer.com', then fill in 'my-shop'.
     + Connection Key: can be found in Picqer > Settings > Webshops > Shopware shop. Copy and paste this field.
     + Debug: Only enable when the plugin is not working, this will log errors in the communication with Picqer.

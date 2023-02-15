@@ -70,6 +70,11 @@ final class EventSubscriber implements EventSubscriberInterface
 
             $salesChannelId = $order->getSalesChannelId();
 
+            $enabled = $this->configService->getBool($this->buildConfigKey('enabled'), $salesChannelId);
+            if (! $enabled) {
+                return;
+            }
+
             $subdomain = $this->configService->getString($this->buildConfigKey('subdomain'), $salesChannelId);
             $connectionKey = $this->configService->getString($this->buildConfigKey('connectionkey'), $salesChannelId);
             $debug = $this->configService->getBool($this->buildConfigKey('debug'), $salesChannelId);
