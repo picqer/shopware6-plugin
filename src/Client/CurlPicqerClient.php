@@ -33,6 +33,7 @@ final class CurlPicqerClient implements PicqerClient
         curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($session, CURLOPT_POSTFIELDS, json_encode($body));
         curl_setopt($session, CURLOPT_FAILONERROR, true);
+        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 
         curl_exec($session);
 
