@@ -18,37 +18,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 final class EventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var SystemConfigService
-     */
-    private $configService;
-
-    /**
-     * @var PicqerClient
-     */
-    private $client;
-
-    /**
-     * @var EntityRepository
-     */
-    private $orderRepository;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
     public function __construct(
-        SystemConfigService $configService,
-        PicqerClient $client,
-        EntityRepository $orderRepository,
-        LoggerInterface $logger
-    ) {
-        $this->configService = $configService;
-        $this->client = $client;
-        $this->orderRepository = $orderRepository;
-        $this->logger = $logger;
-    }
+        private readonly SystemConfigService $configService,
+        private readonly PicqerClient $client,
+        private readonly EntityRepository $orderRepository,
+        private readonly LoggerInterface $logger
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
